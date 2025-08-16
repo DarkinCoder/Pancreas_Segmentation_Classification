@@ -1,0 +1,50 @@
+3. Training / Inference
+Train (segmentation baseline via nnU-Netv2)
+bash scripts/train_seg.sh
+
+Predict (segmentation)
+bash scripts/predict.sh
+
+Evaluate segmentation (Dice)
+python scripts/eval_seg.py \
+  --pred_dir /path/to/preds \
+  --gt_dir   /workspace/nnUNet_raw/Dataset999_Pancreas/labelsTs
+
+Classification (analysis + calibration; optional)
+
+Merge logits & labels, calibrate:
+
+python scripts/merge_and_calibrate.py \
+  --train_preds /workspace/train_class_predictions.csv \
+  --subtypes /workspace/nnUNet_preprocessed/Dataset999_Pancreas/subtypes.json \
+  --out /workspace/train_cls_merged.csv \
+  --calib_out /workspace/logit_calibration.npz
+
+
+Evaluate classification:
+
+python scripts/eval_cls.py \
+  --pred_csv /workspace/train_cls_merged.csv \
+  --report_out /workspace/train_cls_report.txt
+
+Fine-tune classification head from preprocessed B2ND (optional)
+python scripts/finetune_cls_from_b2nd.py \
+  --dataset 999 --cfg 3d_fullres \
+  --subtypes /workspace/nnUNet_preprocessed/Dataset999_Pancreas/subtypes.json \
+  --ckpt /workspace/nnUNet_results/Dataset999_Pancreas/nnUNetTrainer_TwoHeads__nnUNetPlans__3d_fullres/fold_0/checkpoint_best.pth \
+  --epochs 15 --bsz 2
+
+4. Inference Runtime Benchmark
+
+Baseline:
+
+bash scripts/speed_benchmark.sh baseline \
+  -i /workspace/nnUNet_raw/Dataset999_Pancreas/imagesTs \
+  -o /workspace/preds_baseline
+
+
+Optimized (~10% faster):
+
+bash scripts/speed_benchmark.sh optimized \
+  -i /workspace/nnUNet_raw/Dataset999_Pancreas/imagesTs \
+  -o /workspace/preds_optimized
