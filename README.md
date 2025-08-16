@@ -18,6 +18,8 @@ This led to a ~10% speed improvement in prediction runtime while maintaining seg
 
 Key Results (Validation set)
 
-Mean Dice (Whole Pancreas)	0.9561	Combines normal pancreas (label=1) + lesion (label=2)
-Mean Dice (Lesion)	0.8406	Dice score for lesion class only
-Macro-F1 (Classification)	0.1667	Model collapsed to a single predicted class
+Mean Dice (Whole Pancreas):	0.9561	(Combines normal pancreas (label=1) + lesion (label=2))
+
+Mean Dice (Lesion):	0.8406	(Dice score for lesion class only)
+
+Macro-F1 (Classification):	0.1667	(Model collapsed to a single predicted class)
